@@ -1,4 +1,4 @@
-from flask import Flask, render_template, Response, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify, Response
 import cv2
 import numpy as np
 import dlib
@@ -6,127 +6,99 @@ from imutils import face_utils
 from translation_module import convertMorseToText
 from flask_socketio import SocketIO, emit
 from flask_cors import CORS
+from flask_sqlalchemy import SQLAlchemy
+from flask_bcrypt import Bcrypt
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 
 app = Flask(__name__)
-CORS(app)
-socketio = SocketIO(app)
+app.config['SECRET_KEY'] = 'your_secret_key_here'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'  # Use MySQL if needed
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Initialize the webcam globally
-cap = None  
+db = SQLAlchemy(app)
+bcrypt = Bcrypt(app)
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'
+
+socketio = SocketIO(app)
+CORS(app)
+
+cap = None
+camera = None
+running = False
+
+# Database model for User Authentication
+class User(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(150), unique=True, nullable=False)
+    email = db.Column(db.String(150), unique=True, nullable=False)
+    password = db.Column(db.String(256), nullable=False)
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+# Route: Registration
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        email = request.form['email']
+        password = bcrypt.generate_password_hash(request.form['password']).decode('utf-8')
+
+        if User.query.filter_by(email=email).first():
+            return jsonify({"error": "Email already exists!"}), 400
+
+        new_user = User(username=username, email=email, password=password)
+        db.session.add(new_user)
+        db.session.commit()
+        return jsonify({"message": "Registration successful!"})
+
+    return render_template('register.html')
+
+# Route: Login
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        user = User.query.filter_by(email=email).first()
+
+        if user and bcrypt.check_password_hash(user.password, password):
+            login_user(user)
+            return jsonify({"message": "Login successful!"})
+        else:
+            return jsonify({"error": "Invalid email or password!"}), 401
+
+    return render_template('login.html')
+
+# Route: Logout
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
+
+# Protected Route (Only logged-in users can access)
+@app.route('/dashboard')
+@login_required
+def dashboard():
+    return render_template('dashboard.html', username=current_user.username)
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
-@app.route('/start', methods=['POST'])
-def start_decoder():
-    global cap
-    if cap is None or not cap.isOpened():
-        cap = cv2.VideoCapture(0)
-        if not cap.isOpened():
-            return jsonify({"error": "Failed to open camera"}), 500
-    return jsonify({"message": "Morse Code Decoder Started!"})
-
-@app.route('/stop', methods=['POST'])
-def stop_camera():
-    global running, camera
-    if running:
-        running = False
-        time.sleep(1)  # Allow the loop in generate_frames() to exit
-        if camera is not None:
-            camera.release()  # Release the webcam
-            camera = None
-        return jsonify({"message": "Decoder stopped."})
-    else:
-        return jsonify({"error": "Decoder is not running."})
-
-
-# Load the face detector and shape predictor
-detector = dlib.get_frontal_face_detector()
-predictor = dlib.shape_predictor(r"E:\Project1\Dot_Dash_Decode\computer_vision\models\shape_predictor_68_face_landmarks.dat")
-
-# Define variables
-counter = 0
-pause = 0
-debounce_counter = 0
-morse_code = ""
-current_word = ""
-word_pause_frames = 25
-EAR_threshold = 0.25
-EAR_dot = 2
-EAR_dash = 5
-pause_frames = 20
-pause_debounce = 3
-
-# Function to calculate Euclidean distance
-def distance(pa, pb):
-    return np.linalg.norm(pa - pb)
-
-# Function to calculate EAR (Eye Aspect Ratio)
-def eye_aspect_ratio(a, b, c, d, e, f):
-    horizontal_dist = distance(b, d) + distance(c, e)
-    vertical_dist = distance(a, f)
-    return horizontal_dist / (2.0 * vertical_dist)
-
 # Video streaming function
 def generate_frames():
-    global morse_code, current_word, counter, pause, debounce_counter, cap
-
-    if cap is None or not cap.isOpened():
-        return
-
+    global cap
     while True:
         ret, frame = cap.read()
         if not ret:
             break
 
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        faces = detector(gray)
-
-        for face in faces:
-            landmarks = predictor(gray, face)
-            landmarks = face_utils.shape_to_np(landmarks)
-
-            left_blink = eye_aspect_ratio(landmarks[36], landmarks[37], landmarks[38], landmarks[41], landmarks[40], landmarks[39])
-            right_blink = eye_aspect_ratio(landmarks[42], landmarks[43], landmarks[44], landmarks[47], landmarks[46], landmarks[45])
-            ear = (left_blink + right_blink) / 2.0
-
-            # Handle Morse Code Detection
-            if ear < EAR_threshold:
-                counter += 1
-                pause = 0
-                debounce_counter = 0
-            else:
-                if EAR_dot < counter < EAR_dash:
-                    morse_code += "."
-                elif counter > EAR_dash:
-                    morse_code += "-"
-
-                counter = 0
-                pause += 1
-
-                if pause >= pause_frames and debounce_counter == 0:
-                    if morse_code:
-                        char = convertMorseToText(morse_code)
-                        current_word += char
-                    morse_code = ""
-                    debounce_counter = pause_debounce
-
-                if pause >= word_pause_frames:
-                    if current_word:
-                        current_word += " "
-                    pause = 0
-
-            if debounce_counter > 0:
-                debounce_counter -= 1
-
-            cv2.putText(frame, f"EAR: {ear:.2f}", (100, 100), cv2.FONT_ITALIC, 1.2, (0, 0, 255), 2)
-            cv2.putText(frame, f"Morse: {morse_code}", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 0, 255), 2)
-
         ret, buffer = cv2.imencode('.jpg', frame)
         frame = buffer.tobytes()
-
-        socketio.emit('update', {'morse_code': morse_code, 'translated_text': current_word})
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
@@ -135,4 +107,5 @@ def video_feed():
     return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 if __name__ == '__main__':
+    db.create_all()  # Ensure the database is created
     socketio.run(app, debug=True, allow_unsafe_werkzeug=True)

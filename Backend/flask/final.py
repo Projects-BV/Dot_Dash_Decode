@@ -1,4 +1,4 @@
-from flask import Flask, render_template, Response,jsonify
+from flask import Flask, render_template, Response,jsonify,send_from_directory,request
 import cv2
 import numpy as np
 import dlib
@@ -8,12 +8,35 @@ from flask_socketio import SocketIO, emit
 from flask_cors import CORS
 import time
 
+#new line 1
+
+from flask_sqlalchemy import SQLAlchemy
+from flask_jwt_extended import JWTManager
+from db_setup import db
+from auth_routes import auth
+from flask_migrate import Migrate
+
+# till here
 
 app = Flask(__name__)
+
+#new line 2
+db=SQLAlchemy()
+migrate=Migrate()
+app.config["SQLALCHEMY_DATABASE_URI"]="sqlite:///yourdatabase.db"
+app.config["JWT_SECRET_KEY"]="Aarti_Anurag_Srivastava"
+db.init_app(app)
+jwt=JWTManager(app)
+migrate.init_app(app,db)
+
+app.register_blueprint(auth,url_prefix="/auth")
+
+#till here
 
 cap=None
 camera=None
 running=False
+
 @app.route('/start', methods=['POST'])
 def start_decoder():
     global cap
@@ -50,7 +73,19 @@ def stop_camera():
         return jsonify({"message": "Decoder stopped successfully."})
     else:
         return jsonify({"error": "Decoder is not running."})
+# new line 3
+@app.route('/register', methods=['POST'])
+def register():
+    data = request.get_json()
+    print(data)  # Debugging
+    return jsonify({"message": "User registered successfully!"})
 
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    print(data)  # Debugging
+    return jsonify({"message": "User logged in successfully!"})
+#till here
 '''@app.route('/stop', methods=['POST'])
 def stop_camera():
     global camera, running
@@ -218,4 +253,5 @@ def get_state():
     })'''
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True, allow_unsafe_werkzeug=True)
+    #socketio.run(app, debug=True, allow_unsafe_werkzeug=True)
+    socketio.run(app, debug=True)
