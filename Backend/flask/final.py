@@ -1,4 +1,4 @@
-from flask import Flask, render_template, Response,jsonify,send_from_directory,request
+from flask import Flask, render_template, Response,jsonify,send_from_directory
 import cv2
 import numpy as np
 import dlib
@@ -11,23 +11,28 @@ import time
 #new line 1
 
 from flask_sqlalchemy import SQLAlchemy
-from flask_jwt_extended import JWTManager
+from flask_jwt_extended import JWTManager,create_access_token
 from db_setup import db
 from auth_routes import auth
-from flask_migrate import Migrate
+from flask_bcrypt import Bcrypt
+
 
 # till here
 
 app = Flask(__name__)
+#CORS(app)
+
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)
 
 #new line 2
-db=SQLAlchemy()
-migrate=Migrate()
+#db=SQLAlchemy()
+bcrypt=Bcrypt(app)
 app.config["SQLALCHEMY_DATABASE_URI"]="sqlite:///yourdatabase.db"
 app.config["JWT_SECRET_KEY"]="Aarti_Anurag_Srivastava"
 db.init_app(app)
+with app.app_context():
+    db.create_all()
 jwt=JWTManager(app)
-migrate.init_app(app,db)
 
 app.register_blueprint(auth,url_prefix="/auth")
 
@@ -46,18 +51,7 @@ def start_decoder():
             return jsonify({"error": "Failed to open camera"}), 500
     
     return jsonify({"message": "Morse Code Decoder Started!"})
-'''@app.route('/stop', methods=['POST'])
-def stop_camera():
-    global running, camera
-    if running:
-        running = False
-        time.sleep(1)  # Allow the loop in generate_frames() to exit
-        if camera is not None:
-            camera.release()  # Release the webcam
-            camera = None
-        return jsonify({"message": "Decoder stopped."})
-    else:
-        return jsonify({"error": "Decoder is not running."})'''
+
 @app.route('/stop', methods=['POST'])
 def stop_camera():
     global running, camera
@@ -73,41 +67,17 @@ def stop_camera():
         return jsonify({"message": "Decoder stopped successfully."})
     else:
         return jsonify({"error": "Decoder is not running."})
-# new line 3
-@app.route('/register', methods=['POST'])
-def register():
-    data = request.get_json()
-    print(data)  # Debugging
-    return jsonify({"message": "User registered successfully!"})
 
-@app.route('/login', methods=['POST'])
-def login():
-    data = request.get_json()
-    print(data)  # Debugging
-    return jsonify({"message": "User logged in successfully!"})
-#till here
-'''@app.route('/stop', methods=['POST'])
-def stop_camera():
-    global camera, running
-    if running:
-        running = False
-        time.sleep(1)  # Allow the loop to break
-        if camera is not None:
-            camera.release()  # Release webcam
-            camera = None
-        return jsonify({"message": "Decoder stopped."})
-    else:
-        return jsonify({"error": "Decoder is not running."})'''
 
-CORS(app)
+
+
+
+
 socketio = SocketIO(app)
-# Initialize the webcam
-#cap = cv2.VideoCapture(0)
-#if not cap.isOpened():
-    #print("Cannot open camera")
+
 
 detector = dlib.get_frontal_face_detector()
-predictor = dlib.shape_predictor("E:\Project1\Dot_Dash_Decode\computer_vision\models\shape_predictor_68_face_landmarks.dat")
+predictor = dlib.shape_predictor(r"E:\Project1\Dot_Dash_Decode\computer_vision\models\shape_predictor_68_face_landmarks.dat")
 
 # Initialize variables for the blink detection
 counter = 0
@@ -204,16 +174,7 @@ def generate_frames():
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
-'''@app.route('/video_feed')
-def video_feed():
-    return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
-@app.route('/current_word')
-def current_word_view():
-    return current_word
-
-if __name__ == '__main__':
-    app.run(debug=True)'''
 @app.route('/video_feed')
 def video_feed():
     return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
@@ -223,34 +184,9 @@ def video_feed():
 def serve_image(filename):
     return send_from_directory('images', filename)
 
-'''@socketio.on('connect')
-def handle_connect():
-    print("Client connected")
-    emit('initial_state', {
-        'morse_code': morse_code,
-        'current_word': current_word
-    })
 
-@socketio.on('disconnect')
-def handle_disconnect():
-    print("Client disconnected")
 
-@app.route('/reset', methods=['POST'])
-def reset_state():
-    global morse_code, current_word, counter, pause, debounce_counter
-    morse_code = ""
-    current_word = ""
-    counter = 0
-    pause = 0
-    debounce_counter = 0
-    return jsonify({'status': 'success'})
 
-@app.route('/get_state')
-def get_state():
-    return jsonify({
-        'morse_code': morse_code,
-        'current_word': current_word
-    })'''
 
 if __name__ == '__main__':
     #socketio.run(app, debug=True, allow_unsafe_werkzeug=True)
