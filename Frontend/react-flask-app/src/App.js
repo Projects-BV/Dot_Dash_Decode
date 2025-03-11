@@ -26,49 +26,88 @@ function App() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
+  const [email, setEmail] = useState('');
   const [history, setHistory] = useState([]);
   const [showHistory, setShowHistory] = useState(false);
 
+  
   const handleRegister = async () => {
-    const response = await fetch('http://127.0.0.1:5000/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password }),
-    });
-
-    const data = await response.json();
-    setMessage(data.message);
-  };
-  const handleLogin = async () => {
-    const response = await fetch('http://127.0.0.1:5000/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password }),
-    });
-
-    const data = await response.json();
-    if (response.ok) {
-      localStorage.setItem('token', data.access_token);
-      setMessage('Login successful!');
-    } else {
-      setMessage(data.message);
+    try {
+      const response = await fetch('http://127.0.0.1:5000/auth/register', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify({ 
+          username, 
+          email,  // Make sure you have this field
+          password 
+        }),
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        console.error('Registration failed:', data);
+        setMessage("Registration Failed");
+        // Show error message to user
+        return;
+      }
+      
+      console.log('Registration successful:', data);
+      setMessage("Registration successful. Please Log in!")
+      // Handle successful registration
+    } catch (error) {
+      console.error('Network error:', error);
+      // Show network error to user
     }
   };
 
+  const handleLogin = async () => {
+    try {
+      const response = await fetch('http://127.0.0.1:5000/auth/login', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify({ 
+          username,email, 
+          password 
+        }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        localStorage.setItem('token', data.access_token);
+        setMessage('Login successful!');
+      } else {
+        setMessage(data.message);
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      setMessage('Network error. Please try again.');
+    }
+  };
+  
   const fetchHistory = async () => {
     try {
-      const response = await axios.get('http://127.0.0.1:5000/get-history'); // Call Flask API
+      const response = await axios.get('http://127.0.0.1:5000/get-history');
       setHistory(response.data);
-      setShowHistory(true); // Show history section
+      setShowHistory(true);
     } catch (error) {
       console.error('Error fetching history:', error);
+      setMessage("Failed to fetch history");
     }
   };
-
-
   const redirectToTest = () => {
     window.location.href = 'http://127.0.0.1:5000';
   };
+  
 
   const setupIntersectionObservers = () => {
     const observer = new IntersectionObserver((entries) => {
@@ -184,13 +223,25 @@ function App() {
       <section id="login-section" className="section hidden">
         <div className="content">
           <h2>A Morse code decoding website</h2>
+            <div className="form-group">
+              <label htmlFor="email">Email</label>
+              <input
+                id="email"
+                type="email"
+                placeholder="Enter your Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="form-input"
+              />
+            </div>
+
           <div className="login-form">
             <div className="form-group">
               <label htmlFor="username">Username</label>
               <input
                 id="username"
-                type="email"
-                placeholder="Enter your email"
+                type="username"
+                placeholder="Enter your Username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="form-input"

@@ -1,9 +1,10 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from db_setup import db, User
+from flask_bcrypt import Bcrypt
 
 auth = Blueprint("auth", __name__)
-
+bcrypt = Bcrypt()
 # Register Route
 @auth.route('/register', methods=['POST'])
 def register():
@@ -40,3 +41,4 @@ def profile():
     user_id = get_jwt_identity()
     user = User.query.get(user_id)
     return jsonify(user.to_dict()), 200
+
