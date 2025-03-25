@@ -1,0 +1,114 @@
+:root {
+    --primary-color: #20B2AA;
+    --secondary-color: #3a4089;
+    --background-color: rgba(255, 255, 255, 0.1);
+    --transition-speed: 0.3s;
+}
+.page-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 0 20px; /* Optional: adds some side padding */
+}
+.flashcards-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    width:  60vw; 
+    max-width: 1200px; 
+    min-height: 60vh;
+    background-color: #f0f0f0; /* Added a background color */
+    perspective: 1000px;
+    padding:20px;
+    gap:20px;
+    overflow: hidden;
+    margin: 0 auto;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.flashcard-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    height: 500px; /* Added a fixed height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.flashcard {
+    position: absolute;
+    width: 500px;
+    min-height: 400px;
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    transition: all var(--transition-speed) ease-in-out;
+    transform-origin: center;
+    padding: 25px;
+    opacity: 0.6;
+    scale: 0.9;
+    z-index: 1;
+}
+
+.card-active {
+    opacity: 1;
+    scale: 1.05;
+    z-index: 10;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+}
+
+.card-adjacent {
+    opacity: 0.8;
+    scale: 0.95;
+    z-index: 5;
+}
+
+.card-distant {
+    opacity: 0.5;
+    scale: 0.9;
+    z-index: 1;
+}
+
+.flashcard-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.flashcard-description {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.flashcard-impact {
+    background-color: rgba(32, 178, 170, 0.1);
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.flashcard-impact-title {
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.flashcard-impact-text {
+    color: #666;
+    font-style: italic;
+}
+
+@media (max-width: 768px) {
+    .flashcard {
+        width: 90%;
+        max-width: 350px;
+    }
+}
