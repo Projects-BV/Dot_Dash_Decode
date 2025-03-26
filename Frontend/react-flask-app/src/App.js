@@ -1,19 +1,14 @@
-
-
-
 import React, { useEffect, useState } from 'react';
 import './App.css'; 
 import mainLogo from './assets/images/main_logo.PNG';
 import dotdashLogo from './assets/images/Logo_dotdash.PNG';
-import morseCodeChart from './assets/images/morsecode.png';
 import axios from 'axios';
+import MorseCodeFlashcards from './flashcards.js';
+import './flashcards.css';
+import MorseCodeEyeFlashcards from './tutorial.js'
+import './tutorial.css';
+import './login_register.css';
 
-//new line 1
-
-import {BrowserRouter as Router,Route,Routes} from "react-router-dom";
-import Register from "./Register";
-import Login from "./Login";
-//till here
 function App() {
   
   useEffect(() => {
@@ -29,7 +24,13 @@ function App() {
   const [email, setEmail] = useState('');
   const [history, setHistory] = useState([]);
   const [showHistory, setShowHistory] = useState(false);
+  const [isLoginForm, setIsLoginForm] = useState(true);
 
+  const toggleForm = () => {
+    setIsLoginForm(!isLoginForm);
+    // Reset message when switching forms
+    setMessage('');
+  };
   
   const handleRegister = async () => {
     try {
@@ -42,7 +43,7 @@ function App() {
         credentials: 'include',
         body: JSON.stringify({ 
           username, 
-          email,  // Make sure you have this field
+          email,  
           password 
         }),
       });
@@ -52,16 +53,15 @@ function App() {
       if (!response.ok) {
         console.error('Registration failed:', data);
         setMessage("Registration Failed");
-        // Show error message to user
         return;
       }
       
       console.log('Registration successful:', data);
       setMessage("Registration successful. Please Log in!")
-      // Handle successful registration
+      setIsLoginForm(true); // Switch back to login form after successful registration
     } catch (error) {
       console.error('Network error:', error);
-      // Show network error to user
+      setMessage("Network error. Please try again.");
     }
   };
 
@@ -104,11 +104,11 @@ function App() {
       setMessage("Failed to fetch history");
     }
   };
+
   const redirectToTest = () => {
     window.location.href = 'http://127.0.0.1:5000';
   };
   
-
   const setupIntersectionObservers = () => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -189,12 +189,7 @@ function App() {
   };
 
   return (
-    <Router>
-      <div className="App">
-        <Routes>
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-        </Routes>
+    <div className="App">
       <nav className="topbar">
         <div className="nav-container">
           <div className="logo-container">
@@ -222,49 +217,94 @@ function App() {
 
       <section id="login-section" className="section hidden">
         <div className="content">
-          <h2>A Morse code decoding website</h2>
-            <div className="form-group">
-              <label htmlFor="email">Email</label>
-              <input
-                id="email"
-                type="email"
-                placeholder="Enter your Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="form-input"
-              />
-            </div>
+          <div className="auth-container">
+            <div className={`form-container ${isLoginForm ? 'login-active' : 'register-active'}`}>
+              <div className="login-form">
+                <h2>User Login</h2>
+                <div className="form-group">
+                  <label htmlFor="username">Username</label>
+                  <input
+                    id="username"
+                    type="text"
+                    placeholder="Enter your Username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="form-input"
+                  />
+                </div>
+                
+                <div className="form-group">
+                  <label htmlFor="password">Password</label>
+                  <input
+                    id="password"
+                    type="password"
+                    placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="form-input"
+                  />
+                </div>
+                
+                <div className="button-group">
+                  <button className="btn" onClick={handleLogin}>Login</button>
+                </div>
+                
+                <div className="form-toggle">
+                  Not registered? <a onClick={toggleForm}>Register here</a>
+                </div>
+                
+                <p className="message">{message}</p>
+              </div>
 
-          <div className="login-form">
-            <div className="form-group">
-              <label htmlFor="username">Username</label>
-              <input
-                id="username"
-                type="username"
-                placeholder="Enter your Username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className="form-input"
-              />
+              <div className="register-form">
+                <h2>Registration</h2>
+                <div className="form-group">
+                  <label htmlFor="email">Email</label>
+                  <input
+                    id="email"
+                    type="email"
+                    placeholder="Enter your Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="form-input"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="reg-username">Username</label>
+                  <input
+                    id="reg-username"
+                    type="text"
+                    placeholder="Choose a Username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="form-input"
+                  />
+                </div>
+                
+                <div className="form-group">
+                  <label htmlFor="reg-password">Password</label>
+                  <input
+                    id="reg-password"
+                    type="password"
+                    placeholder="Create a Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="form-input"
+                  />
+                </div>
+                
+                <div className="button-group">
+                  <button className="btn" onClick={handleRegister}>Register</button>
+                </div>
+                
+                <div className="form-toggle">
+                  Already have an account? <a onClick={toggleForm}>Login here</a>
+                </div>
+                
+                <p className="message">{message}</p>
+              </div>
             </div>
-            
-            <div className="form-group">
-              <label htmlFor="password">Password</label>
-              <input
-                id="password"
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="form-input"
-              />
-            </div>
-            
-            <div className="button-group">
-              <button className="btn" onClick={handleLogin}>Login</button>
-              <button className="btn" onClick={handleRegister}>Register</button>
-            </div>
-            <p className="message">{message}</p>
           </div>
         </div>
       </section>
@@ -272,7 +312,7 @@ function App() {
       <section id="tutorial-section" className="section hidden">
         <div className="content">
           <h2>Tutorial</h2>
-          <img src={morseCodeChart} alt="Morse Code Chart" className="tutorial-image" />
+          <MorseCodeEyeFlashcards />
         </div>
       </section>
 
@@ -297,17 +337,14 @@ function App() {
         </div>
       </section>
 
-      <section id="about-section" className="section hidden">
+      <section id="about-section" className="section">
         <div className="content">
-          <h2>Interactive things</h2>
+          <h2>About</h2>
+          <MorseCodeFlashcards />
         </div>
       </section>
-      </div>
-    </Router>
+    </div>
   );
 }
 
 export default App;
-
-
-
