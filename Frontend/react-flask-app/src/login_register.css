@@ -14,12 +14,13 @@ body {
 }
 
 .topbar {
-    position: fixed;
+    position: relative;
     top: 0;
     left: 0;
     width: 100%;
     background-color: rgba(19, 19, 22, 0.9);
-    padding: 20px;
+    height: 80px;  /* Adjust as needed */
+    padding: 0px 20px; /* Reduce padding */
     z-index: 1000;
 }
 
@@ -30,7 +31,7 @@ body {
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    padding: 0 20px;
+    padding: 20px 20px;
 }
 
 .logo-container {
@@ -89,7 +90,7 @@ body {
 }
 
 #tutorial-section {
-    background-color: #ffffff;
+    background-color:#CBA35C;
     color: #000;
 }
 
@@ -133,7 +134,7 @@ h2 {
 }
 
 .btn:hover {
-    background-color: #024e62;
+    background-color: #24a6c7;
     transform: translateY(-2px);
 }
 
@@ -232,7 +233,7 @@ body {
 }
 
 #hero .btn {
-    background-color: #f07007;
+    background-color: #e66953;
     color: #ffffff;
     padding: 12px 30px;
     border: none;
@@ -245,7 +246,7 @@ body {
 }
 
 #hero .btn:hover {
-    background-color: #4338CA;
+    background-color: #24a6c7;
     transform: translateY(-2px);
     box-shadow: 0 6px 8px rgba(79, 70, 229, 0.3);
 }
