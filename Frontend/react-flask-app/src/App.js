@@ -8,7 +8,7 @@ import './flashcards.css';
 import MorseCodeEyeFlashcards from './tutorial.js'
 import './tutorial.css';
 import './login_register.css';
-import Video from './assets/DSC_4403.MOV';
+import TutorialVideo from './assets/TutorialVideo.mp4';
 
 
 
@@ -196,7 +196,7 @@ function App() {
       <nav className="topbar">
         <div className="nav-container">
           <div className="logo-container">
-            <img src={mainLogo} alt="Logo" className="topbar-logo" />
+            
           </div>
           <div className="nav-content">
             <a href="#login-section" className="nav-item">Login</a>
@@ -322,8 +322,8 @@ function App() {
       <section id="history-section" className="section hidden">
         <div className="content">
           <h2>Video Tutorial </h2>
-          <video width="640" height="360" controls>
-            <source src={Video} type="MOV" />
+          <video width="700" height="500" controls>
+            <source src={TutorialVideo} type="video/mp4"/>
             Your browser does not support the video tag.
           </video>
         </div>
