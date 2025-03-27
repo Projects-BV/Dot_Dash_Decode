@@ -7,13 +7,15 @@ from translation_module import convertMorseToText
 from flask_socketio import SocketIO, emit
 from flask_cors import CORS
 import time
-
+from flask_mail import Mail,Message
+import os
+import logging
 #new line 1
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager,create_access_token
 from db_setup import db
-from auth_routes import auth
+
 from flask_bcrypt import Bcrypt
 
 
@@ -22,20 +24,53 @@ from flask_bcrypt import Bcrypt
 app = Flask(__name__)
 #CORS(app)
 
-CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)
+#CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)
+
+CORS(app, resources={r"/auth/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)
 
 #new line 2
 #db=SQLAlchemy()
 bcrypt=Bcrypt(app)
 app.config["SQLALCHEMY_DATABASE_URI"]="sqlite:///yourdatabase.db"
-app.config["JWT_SECRET_KEY"]="Aarti_Anurag_Srivastava"
+app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY", "fallback_secret_key")
+
+#app.config["JWT_SECRET_KEY"]="Aarti_Anurag_Srivastava"
 db.init_app(app)
 with app.app_context():
+    db.drop_all()
     db.create_all()
 jwt=JWTManager(app)
 
-app.register_blueprint(auth,url_prefix="/auth")
+# Email configuration
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # For Gmail
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+#app.config['MAIL_USERNAME'] = 'poison.ivy.081102@gmail.com'  
+#app.config['MAIL_PASSWORD'] = 'lrbn zzpz pqhv lriy'     # You'll need to change this
+#app.config['MAIL_DEFAULT_SENDER'] = 'poison.ivy.081102@gmail.com'  # You'll need to change this
+app.config['MAIL_USERNAME'] = 'dotdashdecode@gmail.com'  
+app.config['MAIL_PASSWORD'] = 'fpis urax ptmy vhgs'     
+app.config['MAIL_DEFAULT_SENDER'] = 'dotdashdecode@gmail.com'  # You'll need to cha
+#app.config["MAIL_USERNAME"] = os.environ.get("MAIL_USERNAME")
+#app.config["MAIL_PASSWORD"] = os.environ.get("MAIL_PASSWORD")
+#app.config["MAIL_DEFAULT_SENDER"] = os.environ.get("MAIL_USERNAME")
+# Initialize mail with app
+#mail.init_app(app)
+mail=Mail()
+mail.init_app(app)
 
+from auth_routes import auth
+app.register_blueprint(auth,url_prefix="/auth")
+#debugging
+@app.route('/send-test-email')
+def send_test_email():
+    msg = Message("Test Email", recipients=['your_email@gmail.com'])
+    msg.body = "This is a test email from Flask."
+    try:
+        mail.send(msg)
+        return "Email sent successfully!"
+    except Exception as e:
+        return f"Error: {str(e)}"
 #till here
 
 cap=None
