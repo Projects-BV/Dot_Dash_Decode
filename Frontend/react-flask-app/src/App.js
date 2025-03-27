@@ -8,7 +8,11 @@ import './flashcards.css';
 import MorseCodeEyeFlashcards from './tutorial.js'
 import './tutorial.css';
 import './login_register.css';
-//import Video from './assets/DSC_4403.MOV';
+
+import VerifyEmail from './VerifyEmail';
+
+import Video from './assets/DSC_4403.MOV';
+
 
 
 
@@ -28,7 +32,19 @@ function App() {
   const [history, setHistory] = useState([]);
   const [showHistory, setShowHistory] = useState(false);
   const [isLoginForm, setIsLoginForm] = useState(true);
+  const [currentPath, setCurrentPath] = useState(window.location.pathname);
+  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
+  useEffect(() => {
+    const handlePathChange = () => {
+      setCurrentPath(window.location.pathname);
+    };
+    window.addEventListener('popstate', handlePathChange);
+    return () => window.removeEventListener('popstate', handlePathChange);
+  }, []);
+  
   const toggleForm = () => {
     setIsLoginForm(!isLoginForm);
     // Reset message when switching forms
@@ -68,45 +84,58 @@ function App() {
     }
   };
 
+  
   const handleLogin = async () => {
     try {
+      setIsLoading(true); // Set loading state at the beginning
+      setShowError(false); // Reset error state
+      
       const response = await fetch('http://127.0.0.1:5000/auth/login', {
         method: 'POST',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json'
         },
-        credentials: 'include',
-        body: JSON.stringify({ 
-          username,email, 
-          password 
-        }),
+        body: JSON.stringify({ username, password }),
       });
-  
+      
       const data = await response.json();
-  
-      if (response.ok) {
-        localStorage.setItem('token', data.access_token);
-        setMessage('Login successful!');
-      } else {
-        setMessage(data.message);
+      
+      if (!response.ok) {
+        if (data.needsVerification) {
+          setMessage(`Please verify your email before logging in. Verification link was sent to ${data.email}`);
+        } else {
+          setMessage(data.error || "Login failed. Please check your credentials.");
+        }
+        return;
       }
+      
+      // Success - handle login
+      localStorage.setItem('token', data.token);
+      setMessage("Login successful!");
+      
+      // Redirect to main app if needed
+      // window.location.href = '/dashboard'; // Uncomment if you want to redirect
+      
     } catch (error) {
-      console.error('Login error:', error);
-      setMessage('Network error. Please try again.');
+      console.log("Network error:", error);
+      setMessage("Network error. Please try again.");
+    } finally {
+      setIsLoading(false); // Always set loading state back to false
     }
   };
-  
   const fetchHistory = async () => {
     try {
       const response = await axios.get('http://127.0.0.1:5000/get-history');
       setHistory(response.data);
       setShowHistory(true);
     } catch (error) {
-      console.error('Error fetching history:', error);
-      setMessage("Failed to fetch history");
+      console.log("Network error:", error);
+      setMessage("Network error. Please try again.");
+    } finally {
+      setIsLoading(false); // Always set loading state back to false
     }
   };
+ 
 
   const redirectToTest = () => {
     window.location.href = 'http://127.0.0.1:5000';
@@ -191,6 +220,11 @@ function App() {
     });
   };
 
+  if (currentPath.startsWith('/verify/')) {
+    const token = currentPath.split('/verify/')[1];
+    return <VerifyEmail token={token} />;
+  }
+
   return (
     <div className="App">
       <nav className="topbar">
@@ -249,11 +283,12 @@ function App() {
                 </div>
                 
                 <div className="button-group">
-                  <button className="btn" onClick={handleLogin}>Login</button>
+                  <button className="btn" onClick={handleLogin} disabled={isLoading}>{isLoading ? "Logging in..." : "Login"}</button>
                 </div>
                 
                 <div className="form-toggle">
-                  Not registered? <a onClick={toggleForm}>Register here</a>
+                  {/*Not registered? <a href="#" onClick={(e) => { e.preventDefault(); toggleForm(); }}>Register here</a>*/}
+                  Not registered? <button type="button" className="link-button" onClick={toggleForm}>Register here</button>
                 </div>
                 
                 <p className="message">{message}</p>
@@ -302,7 +337,8 @@ function App() {
                 </div>
                 
                 <div className="form-toggle">
-                  Already have an account? <a onClick={toggleForm}>Login here</a>
+                  {/*Already have an account? <a href="#" onClick={(e) => { e.preventDefault(); toggleForm(); }}>Login here</a>*/}
+                  Already have an account? <button type="button" className="link-button" onClick={toggleForm}>Login here</button>
                 </div>
                 
                 <p className="message">{message}</p>
