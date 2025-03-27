@@ -11,7 +11,6 @@ import './login_register.css';
 
 import VerifyEmail from './VerifyEmail';
 
-import Video from './assets/DSC_4403.MOV';
 
 
 
