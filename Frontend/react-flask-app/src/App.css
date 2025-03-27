@@ -247,7 +247,7 @@ body {
     font-size: 1.1rem;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition : all 0.3s ease;
     box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2);  /* Subtle shadow matching button color */
 }
 
