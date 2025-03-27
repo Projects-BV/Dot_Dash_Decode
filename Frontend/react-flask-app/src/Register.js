@@ -1,32 +1,81 @@
-import React,{useState} from "react";
-import {registerUser} from "./api"
 
-const Register=()=>{
-    const [formData,setFormData]=useState({username:"",email:"",password:""})
-    const handleChange=(e)=>{
-        setFormData({...formData,[e.target.name]:e.target.value});
+
+import React, { useState } from "react";
+import { registerUser } from "./api";
+
+const Register = () => {
+    const [formData, setFormData] = useState({
+        email: "",
+        username: "",
+        password: ""
+    });
+    const [message, setMessage] = useState("");
+    const [error, setError] = useState("");
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     };
-    //i changed it to console log but the output did not change. previously it was not in the console log format.
-    const handleSubmit=async(e)=>{
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        try{
-            const response=await registerUser(formData);
-            console.log(response.data);
-            alert(response.data.message);
-        }
-        catch(err)
-        {
-            alert(err.response?.data?.error||"Registration failed");
+        setError("");
+        setMessage("");
+        
+        try {
+            const response = await registerUser(formData);
+            setMessage(response.data.message || "Registration successful! Please check your email to verify your account.");
+        } catch (err) {
+            setError(err.response?.data?.error || "Registration failed");
         }
     };
 
-    return(
-        <form onSubmit={handleSubmit}>
-            <input type="text" name="username" placeholder="Username" onChange={handleChange} required />
-            <input type="email" name="email" placeholder="Email" onChange={handleChange} required />
-            <input type="password" name="password" placeholder="Password" onChange={handleChange} required />
-            <button type="submit">Register</button>
-        </form>
+    return (
+        <div className="register-form">
+            <h2>REGISTRATION</h2>
+            <form onSubmit={handleSubmit}>
+                <div className="form-group">
+                    <label htmlFor="email">Email</label>
+                    <input
+                        type="email"
+                        name="email"
+                        id="email"
+                        placeholder="Enter your Email"
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="reg-username">Username</label>
+                    <input
+                        type="text"
+                        name="username"
+                        id="reg-username"
+                        placeholder="Choose a Username"
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="reg-password">Password</label>
+                    <input
+                        type="password"
+                        name="password"
+                        id="reg-password"
+                        placeholder="Create a Password"
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+                <button type="submit" className="register-btn">Register</button>
+                
+                {error && <p className="error-message">{error}</p>}
+                {message && <p className="success-message">{message}</p>}
+                
+                <p className="login-link">
+                    Already have an account? <a href="#" onClick={() => document.getElementById('login-button').click()}>Login here</a>
+                </p>
+            </form>
+        </div>
     );
 };
 
