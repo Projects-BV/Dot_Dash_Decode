@@ -77,7 +77,7 @@ socketio = SocketIO(app)
 
 
 detector = dlib.get_frontal_face_detector()
-predictor = dlib.shape_predictor(r"E:\Project1\Dot_Dash_Decode\computer_vision\models\shape_predictor_68_face_landmarks.dat")
+predictor = dlib.shape_predictor(r"E:\Chrome Downloads\shape_predictor_68_face_landmarks (2).dat")
 
 # Initialize variables for the blink detection
 counter = 0
