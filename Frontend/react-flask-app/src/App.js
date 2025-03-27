@@ -8,11 +8,11 @@ import './flashcards.css';
 import MorseCodeEyeFlashcards from './tutorial.js'
 import './tutorial.css';
 import './login_register.css';
-<<<<<<< HEAD
+
 import VerifyEmail from './VerifyEmail';
-=======
+
 import Video from './assets/DSC_4403.MOV';
->>>>>>> 8d3534918ae47d94d7fa87bb5d52cdc7e596da77
+
 
 
 
