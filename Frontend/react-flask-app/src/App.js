@@ -8,7 +8,7 @@ import './flashcards.css';
 import MorseCodeEyeFlashcards from './tutorial.js'
 import './tutorial.css';
 import './login_register.css';
-import Video from './assets/DSC_4403.MOV';
+//import Video from './assets/DSC_4403.MOV';
 
 
 
@@ -323,7 +323,7 @@ function App() {
         <div className="content">
           <h2>Video Tutorial </h2>
           <video width="640" height="360" controls>
-            <source src={Video} type="MOV" />
+  
             Your browser does not support the video tag.
           </video>
         </div>
