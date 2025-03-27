@@ -8,7 +8,11 @@ import './flashcards.css';
 import MorseCodeEyeFlashcards from './tutorial.js'
 import './tutorial.css';
 import './login_register.css';
+<<<<<<< HEAD
 import VerifyEmail from './VerifyEmail';
+=======
+import Video from './assets/DSC_4403.MOV';
+>>>>>>> 8d3534918ae47d94d7fa87bb5d52cdc7e596da77
 
 
 
@@ -350,24 +354,14 @@ function App() {
 
       <section id="history-section" className="section hidden">
         <div className="content">
-          <h2>Previous Conversation</h2>
-          <button className="btn" onClick={fetchHistory}>View History</button>
-          
-          {showHistory && (
-            <ul className="history-list">
-              {history.length > 0 ? (
-                history.map((entry, index) => (
-                  <li key={index}>
-                    {new Date(entry.timestamp).toLocaleString()} - {entry.action}
-                  </li>
-                ))
-              ) : (
-                <p>No history available.</p>
-              )}
-            </ul>
-          )}
+          <h2>Video Tutorial </h2>
+          <video width="640" height="360" controls>
+            <source src={Video} type="MOV" />
+            Your browser does not support the video tag.
+          </video>
         </div>
       </section>
+
 
       <section id="about-section" className="section">
         <div className="content">
