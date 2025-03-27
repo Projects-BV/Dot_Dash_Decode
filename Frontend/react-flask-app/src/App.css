@@ -14,12 +14,13 @@ body {
 }
 
 .topbar {
-    position: fixed;
+    position: relative;
     top: 0;
     left: 0;
     width: 100%;
     background-color: rgba(19, 19, 22, 0.9);
-    padding: 20px;
+    height: 80px;  /* Adjust as needed */
+    padding: 0px 20px; /* Reduce padding */
     z-index: 1000;
 }
 
@@ -62,7 +63,7 @@ body {
 }
 
 #tutorial-section {
-    background-color: #ffffff;
+    background-color: #CBA35C;
     color: #000;
 }
 
@@ -106,7 +107,7 @@ h2 {
 }
 
 .btn:hover {
-    background-color: #024e62;
+    background-color: #24a6c7;
     transform: translateY(-2px);
 }
 
@@ -239,7 +240,7 @@ body {
 
 /* Specific styles for the hero section button */
 #hero .btn {
-    background-color: #f07007;  /* Indigo color */
+    background-color: #e66953;
     color: #ffffff;
     padding: 12px 30px;
     border: none;
@@ -248,11 +249,11 @@ body {
     font-weight: 500;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2);  /* Subtle shadow matching button color */
+    box-shadow: 0 4px 6px rgb(36, 166, 199);  /* Subtle shadow matching button color */
 }
 
 #hero .btn:hover {
-    background-color: #4338CA;  /* Slightly darker on hover */
+    background-color: #24a6c7;  /* Slightly darker on hover */
     transform: translateY(-2px);
     box-shadow: 0 6px 8px rgba(79, 70, 229, 0.3);
 }
@@ -269,7 +270,7 @@ body {
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    padding: 0 20px;
+    padding: 20px 20px;
 }
 
 .logo-container {
