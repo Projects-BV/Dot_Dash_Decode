@@ -11,13 +11,8 @@ import './login_register.css';
 
 import VerifyEmail from './VerifyEmail';
 
-<<<<<<< HEAD
-import Video from './assets/DSC_4403.MOV';
-
-=======
 
 import TutorialVideo from './assets/TutorialVideo.mp4';
->>>>>>> 328cb1bcc5554da90ddce82727137ec47ef1e209
 
 
 
@@ -134,12 +129,6 @@ function App() {
       setHistory(response.data);
       setShowHistory(true);
     } catch (error) {
-<<<<<<< HEAD
-      console.error('Error fetching history:', error);
-      setMessage("Failed to fetch history");
-    }
-  };
-=======
       console.log("Network error:", error);
       setMessage("Network error. Please try again.");
     } finally {
@@ -147,7 +136,6 @@ function App() {
     }
   };
  
->>>>>>> 328cb1bcc5554da90ddce82727137ec47ef1e209
 
   const redirectToTest = () => {
     window.location.href = 'http://127.0.0.1:5000';
@@ -242,11 +230,7 @@ function App() {
       <nav className="topbar">
         <div className="nav-container">
           <div className="logo-container">
-<<<<<<< HEAD
-            <img src={mainLogo} alt="Logo" className="topbar-logo" />
-=======
             
->>>>>>> 328cb1bcc5554da90ddce82727137ec47ef1e209
           </div>
           <div className="nav-content">
             <a href="#login-section" className="nav-item">Login</a>
@@ -374,13 +358,8 @@ function App() {
       <section id="history-section" className="section hidden">
         <div className="content">
           <h2>Video Tutorial </h2>
-<<<<<<< HEAD
-          <video width="640" height="360" controls>
-            <source src={Video} type="MOV" />
-=======
           <video width="700" height="500" controls>
             <source src={TutorialVideo} type="video/mp4"/>
->>>>>>> 328cb1bcc5554da90ddce82727137ec47ef1e209
             Your browser does not support the video tag.
           </video>
         </div>
