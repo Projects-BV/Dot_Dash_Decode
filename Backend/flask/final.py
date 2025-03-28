@@ -17,6 +17,7 @@ from flask_jwt_extended import JWTManager,create_access_token
 from db_setup import db
 
 from flask_bcrypt import Bcrypt
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 
 # till here
@@ -24,10 +25,10 @@ from flask_bcrypt import Bcrypt
 app = Flask(__name__)
 #CORS(app)
 
-#CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)
 
-CORS(app, resources={r"/auth/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)
-
+#CORS(app, resources=r"/start": {"origins": "http://localhost:3000", "supports_credentials": True},)
+#CORS(app, resources={r"/auth/*": {"origins": "http://localhost:3000", "supports_credentials": True}})
 #new line 2
 #db=SQLAlchemy()
 bcrypt=Bcrypt(app)
@@ -78,14 +79,21 @@ camera=None
 running=False
 
 @app.route('/start', methods=['POST'])
+@jwt_required() #to authenticate user. only start when logged in
 def start_decoder():
-    global cap
-    if cap is None or not cap.isOpened():
-        cap = cv2.VideoCapture(0)
-        if not cap.isOpened():
-            return jsonify({"error": "Failed to open camera"}), 500
-    
-    return jsonify({"message": "Morse Code Decoder Started!"})
+    #get current user's id from the token
+    current_user=get_jwt_identity()
+    global cap,running
+    try:
+        if cap is None or not cap.isOpened():
+            cap = cv2.VideoCapture(0)
+            if not cap.isOpened():
+                return jsonify({"error": "Failed to open camera"}), 500
+        running=True
+        return jsonify({"message": "Morse Code Decoder Started!"}), 200
+    except Exception as e:
+        print(f"Camera error: {str(e)}")
+        return jsonify({"error": f"Camera error: {str(e)}"}), 500
 
 @app.route('/stop', methods=['POST'])
 def stop_camera():
@@ -139,8 +147,28 @@ def eye_aspect_ratio(a, b, c, d, e, f):
     ear = horizontal_dist / (2.0 * vertical_dist)
     return ear
 
+'''@app.route('/')
+def index():
+    return render_template('index.html')'''
+
 @app.route('/')
 def index():
+    # Initialize camera for any authenticated user accessing the main page
+    # This bypasses the need for a separate /start endpoint
+    global cap, running
+    
+    try:
+        # Only try to initialize camera if it's not already open
+        if cap is None or not cap.isOpened():
+            cap = cv2.VideoCapture(0)  # Open the camera
+            
+        # Set running to True to allow frame generation
+        running = True
+        
+    except Exception as e:
+        print(f"Camera initialization error: {str(e)}")
+        # Continue to render the template even if camera fails
+        
     return render_template('index.html')
 
 # Video streaming function
@@ -219,9 +247,31 @@ def video_feed():
 def serve_image(filename):
     return send_from_directory('images', filename)
 
+@app.route('/reset', methods=['POST'])
+def reset_decoder():
+    global morse_code, current_word, counter, pause, debounce_counter
+    
+    # Reset all the tracking variables
+    morse_code = ""
+    current_word = ""
+    counter = 0
+    pause = 0
+    debounce_counter = 0
+    
+    # Emit an update with empty values
+    socketio.emit('update', {'morse_code': '', 'translated_text': ''})
+    
+    return jsonify({"message": "Decoder reset successfully."}), 200
 
-
-
+# Add better error handling middleware
+@app.errorhandler(422)
+def handle_unprocessable_entity(error):
+    response = jsonify({
+        "error": "Invalid request data",
+        "message": str(error)
+    })
+    response.status_code = 422
+    return response
 
 if __name__ == '__main__':
     #socketio.run(app, debug=True, allow_unsafe_werkzeug=True)
