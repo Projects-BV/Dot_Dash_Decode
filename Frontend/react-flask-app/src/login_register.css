@@ -14,12 +14,21 @@ body {
 }
 
 .topbar {
+<<<<<<< HEAD
     position: fixed;
+=======
+    position: relative;
+>>>>>>> 328cb1bcc5554da90ddce82727137ec47ef1e209
     top: 0;
     left: 0;
     width: 100%;
     background-color: rgba(19, 19, 22, 0.9);
+<<<<<<< HEAD
     padding: 20px;
+=======
+    height: 80px;  /* Adjust as needed */
+    padding: 0px 20px; /* Reduce padding */
+>>>>>>> 328cb1bcc5554da90ddce82727137ec47ef1e209
     z-index: 1000;
 }
 
@@ -30,7 +39,11 @@ body {
     align-items: center;
     justify-content: space-between;
     width: 100%;
+<<<<<<< HEAD
     padding: 0 20px;
+=======
+    padding: 20px 20px;
+>>>>>>> 328cb1bcc5554da90ddce82727137ec47ef1e209
 }
 
 .logo-container {
@@ -89,7 +102,11 @@ body {
 }
 
 #tutorial-section {
+<<<<<<< HEAD
     background-color: #ffffff;
+=======
+    background-color:#CBA35C;
+>>>>>>> 328cb1bcc5554da90ddce82727137ec47ef1e209
     color: #000;
 }
 
@@ -133,7 +150,11 @@ h2 {
 }
 
 .btn:hover {
+<<<<<<< HEAD
     background-color: #024e62;
+=======
+    background-color: #24a6c7;
+>>>>>>> 328cb1bcc5554da90ddce82727137ec47ef1e209
     transform: translateY(-2px);
 }
 
@@ -232,7 +253,11 @@ body {
 }
 
 #hero .btn {
+<<<<<<< HEAD
     background-color: #f07007;
+=======
+    background-color: #e66953;
+>>>>>>> 328cb1bcc5554da90ddce82727137ec47ef1e209
     color: #ffffff;
     padding: 12px 30px;
     border: none;
@@ -245,7 +270,11 @@ body {
 }
 
 #hero .btn:hover {
+<<<<<<< HEAD
     background-color: #4338CA;
+=======
+    background-color: #24a6c7;
+>>>>>>> 328cb1bcc5554da90ddce82727137ec47ef1e209
     transform: translateY(-2px);
     box-shadow: 0 6px 8px rgba(79, 70, 229, 0.3);
 }
