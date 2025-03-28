@@ -14,6 +14,7 @@ mail=Mail()
 #Email verification helper function
 from flask_mail import Message,Mail
 
+#function to send verification email
 def send_verification_email(user_email,token):
     try:
         #get frontenf url
@@ -149,6 +150,7 @@ def resend_verification():
     
     return jsonify({"message": "Verification email sent"}), 200
 
+#life saver if the authentication does not work
 @auth.route('/manual-verify/<username>', methods=['GET'])
 def manual_verify(username):
     user = User.query.filter_by(username=username).first()
