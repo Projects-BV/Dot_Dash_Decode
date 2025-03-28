@@ -84,13 +84,8 @@
 .flashcard-description {
     font-size: 1rem;
     color: #333;
-<<<<<<< HEAD
-    margin-bottom: 15px;
-    text-align: center;
-=======
     margin-bottom: 20px;
     text-align: justify;
->>>>>>> 328cb1bcc5554da90ddce82727137ec47ef1e209
 }
 
 .flashcard-impact {
