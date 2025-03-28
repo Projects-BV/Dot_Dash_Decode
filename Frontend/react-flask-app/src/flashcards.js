@@ -3,26 +3,6 @@ import './flashcards.css';
 
 const projectCards = [
     {
-<<<<<<< HEAD
-        title: "Morse Code Translation",
-        description: "An innovative web application that translates Morse code in real-time, bridging communication barriers and preserving historical communication methods.",
-        impact: "Empowers users to decode and encode messages quickly and accurately"
-    },
-    {
-        title: "User Authentication System",
-        description: "Secure login and registration mechanism with robust backend protection and seamless frontend integration.",
-        impact: "Ensures user data privacy and provides a smooth authentication experience"
-    },
-    {
-        title: "Interactive Learning Platform",
-        description: "Comprehensive tutorial section with visual guides and interactive Morse code learning tools.",
-        impact: "Makes learning Morse code engaging and accessible for all skill levels"
-    },
-    {
-        title: "Translation & History Tracking",
-        description: "Advanced feature that logs user translation history and provides insights into usage patterns.",
-        impact: "Allows users to review and learn from their previous interactions"
-=======
         title: "Morse Code ",
         description: "Morse code is a communication method that uses short and long signals, called dots and dashes, to represent letters and numbers for transmitting messages. It is especially useful for individuals with disabilities, particularly those with speech impairments. ",
     },
@@ -38,7 +18,6 @@ const projectCards = [
     {
         title: "Interactive Learning Platform",
         description: "Comprehensive tutorial section with visual guides and interactive Morse code learning tools. Makes learning morse code engaging and accessible and all skill levels. ",
->>>>>>> 328cb1bcc5554da90ddce82727137ec47ef1e209
     }
 ];
 
@@ -75,17 +54,10 @@ const MorseCodeFlashcards = () => {
                     >
                         <h3 className="flashcard-title">{card.title}</h3>
                         <p className="flashcard-description">{card.description}</p>
-<<<<<<< HEAD
-                        <div className="flashcard-impact">
-                            <div className="flashcard-impact-title">Project Impact:</div>
-                            <div className="flashcard-impact-text">{card.impact}</div>
-                        </div>
-=======
                          {/*  <div className="flashcard-impact">
                             <div className="flashcard-impact-title">Project Impact:</div>
                             <div className="flashcard-impact-text">{card.impact}</div>
                         </div>*/}
->>>>>>> 328cb1bcc5554da90ddce82727137ec47ef1e209
                     </div>
                 ))}
             </div>
