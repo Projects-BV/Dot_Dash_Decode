@@ -146,11 +146,26 @@
                 });
         });
 
-        document.getElementById("resetButton").addEventListener("click", function () {
+        /*document.getElementById("resetButton").addEventListener("click", function () {
             
             document.getElementById("morse_code").textContent = "";
             document.getElementById("translated_text").textContent = "";
             document.getElementById("statusMessage").textContent = "Reset successful! Enter new Morse code.";
+        });*/
+        document.getElementById("resetButton").addEventListener("click", function () {
+        // Call the reset endpoint
+        fetch("/reset", { method: "POST" })
+            .then(response => response.json())
+            .then(data => {
+                // Clear the displayed text
+                document.getElementById("morse_code").textContent = "";
+                document.getElementById("translated_text").textContent = "";
+                document.getElementById("statusMessage").textContent = "Reset successful! Enter new Morse code.";
+            })
+            .catch(error => {
+                document.getElementById("statusMessage").textContent = "Error resetting decoder!";
+                console.error(error);
+            });
         });
     </script>
 </body>
