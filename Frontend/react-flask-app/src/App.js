@@ -112,6 +112,11 @@ function App() {
       // Success - handle login
       localStorage.setItem('token', data.token);
       setMessage("Login successful!");
+      //scroll back to hero section
+      const heroSection=document.querySelector('#hero');
+      if(heroSection){
+        heroSection.scrollIntoView({behavior:'smooth'});
+      }
       
       // Redirect to main app if needed
       // window.location.href = '/dashboard'; // Uncomment if you want to redirect
@@ -137,8 +142,27 @@ function App() {
   };
  
 
-  const redirectToTest = () => {
-    window.location.href = 'http://127.0.0.1:5000';
+  const redirectToTest = async () => {
+    const token = localStorage.getItem('token');
+  
+    if (!token) {
+        // If no token, scroll to login section
+        const loginSection = document.querySelector('#login-section');
+        if (loginSection) {
+            loginSection.scrollIntoView({
+                behavior: 'smooth'
+            });
+            setMessage("Please Log in to start the Morse Code Decoder");
+            return;
+        }
+    }
+  
+    try {
+        // Better approach: Redirect directly to the Flask app after login
+        window.location.href = 'http://127.0.0.1:5000';
+    } catch (error) {
+        console.error('Navigation error:', error);
+    }
   };
   
   const setupIntersectionObservers = () => {
@@ -236,7 +260,7 @@ function App() {
             <a href="#login-section" className="nav-item">Login</a>
             <a href="#login-section" className="nav-item">Register</a>
             <a href="#tutorial-section" className="nav-item">Tutorial</a>
-            <a href="#history-section" className="nav-item">History</a>
+            <a href="#history-section" className="nav-item">Video Tutorial</a>
             <a href="#about-section" className="nav-item">About</a>
           </div>
         </div>
