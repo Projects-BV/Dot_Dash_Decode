@@ -1,18 +1,10 @@
 /* Morse Code Tutorial Styles */
 body {
-<<<<<<< HEAD
-    background-color: #FFA500 !important; /* Ensure overall page background is orange */
-}
-
-.tutorial-section {
-    background-color: #FFA500 !important; /* Orange background for tutorial section */
-=======
     background-color: #007074 !important; /* Ensure overall page background is orange */
 }
 
 .tutorial-section {
     background-color: #007074 !important; /* Ensure overall page background is orange */
->>>>>>> 328cb1bcc5554da90ddce82727137ec47ef1e209
 }
 
 .morse-tutorial-container {
