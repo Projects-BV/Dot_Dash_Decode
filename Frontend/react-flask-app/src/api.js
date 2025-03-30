@@ -29,3 +29,8 @@ export const getProfile=async(token)=>{
         headers:{Authorization:`Bearer ${token}`},
     });
 };
+
+export const logoutUser=async()=>{
+    localStorage.removeItem('token');
+    return {success:true};
+};
