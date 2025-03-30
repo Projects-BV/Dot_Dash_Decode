@@ -11,10 +11,7 @@ import './login_register.css';
 
 import VerifyEmail from './VerifyEmail';
 
-
 import TutorialVideo from './assets/TutorialVideo.mp4';
-
-
 
 function App() {
   
@@ -22,6 +19,9 @@ function App() {
     setupIntersectionObservers();
     setupSmoothScroll();
     setupScrollIndicator();
+
+    const token=localStorage.getItem('token');
+    setIsLoggedIn(!!token);
   }, []);
 
   
@@ -36,6 +36,7 @@ function App() {
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoggedIn,setIsLoggedIn] = useState(!!localStorage.getItem('token'));
 
   useEffect(() => {
     const handlePathChange = () => {
@@ -76,7 +77,7 @@ function App() {
       }
       
       console.log('Registration successful:', data);
-      setMessage("Registration successful. Please Log in!")
+      setMessage("Registration successful. Please check your mail to Log in!")
       setIsLoginForm(true); // Switch back to login form after successful registration
     } catch (error) {
       console.error('Network error:', error);
@@ -111,6 +112,7 @@ function App() {
       
       // Success - handle login
       localStorage.setItem('token', data.token);
+      setIsLoggedIn(true);
       setMessage("Login successful!");
       //scroll back to hero section
       const heroSection=document.querySelector('#hero');
@@ -128,6 +130,18 @@ function App() {
       setIsLoading(false); // Always set loading state back to false
     }
   };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setIsLoggedIn(false);
+    setMessage("Logged out successfully");
+    // Scroll to login section
+    const loginSection = document.querySelector('#login-section');
+    if (loginSection) {
+      loginSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   const fetchHistory = async () => {
     try {
       const response = await axios.get('http://127.0.0.1:5000/get-history');
@@ -262,6 +276,7 @@ function App() {
             <a href="#tutorial-section" className="nav-item">Tutorial</a>
             <a href="#history-section" className="nav-item">Video Tutorial</a>
             <a href="#about-section" className="nav-item">About</a>
+            {isLoggedIn && <button className="nav-item logout-btn" onClick={handleLogout}>Logout</button>}
           </div>
         </div>
       </nav>
