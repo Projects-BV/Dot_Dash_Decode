@@ -301,3 +301,18 @@ body {
         gap: 15px;
     }
 }
+/*Logout button*/
+.logout-btn {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    font-size: inherit;
+    padding: 0;
+    text-decoration: none;
+    font-family: inherit;
+  }
+  
+  .logout-btn:hover {
+    text-decoration: underline;
+  }
