@@ -1,7 +1,7 @@
 # Dot-Dash-Decode
 A MORSE code decoding project that takes eye blink as input and gives English text as output
 
-###  Motivation behind the project
+##  Motivation behind the project
 Communication is an important aspect for human beings. However, the individuals with severe motor disabilities often face significant challenges in expressing themselves. Traditional assistive technologies, such as speech-to-text software or physical keyboard, may not be always a viable solution for individuals with limited or no muscle control.
 
 Also, during a television interview in 1966, Jeremiah Denton, a U.S. Navy Commander and POW in North Vietnam, blinked the word "T-O-R-T-U-R-E" in Morse code to alert the U.S. military to the mistreatment of American prisoners of war. 
@@ -28,31 +28,31 @@ Also, during a television interview in 1966, Jeremiah Denton, a U.S. Navy Comman
 ##### Frontend Dependencies
 - Node.js (Version 22.14.0)
 - React.js
-- ######Dependencies:
-- Axios
+- Dependencies:
+    -Axios
 
 ##### Backend Dependencies
 - Cmake (Version 3.31.3) Cmake is a cross-platform open source build system.
 - Microsoft Visual Studio Installer (Microsoft Visual C++ 2015-20122 Redistributable (x86))
 - Visual Studio Build Tools (Version 17.12.3)
 - Python (3.13.1)
-- ######Dependencies:
-- Flask, Flask-SocketIO, Flask-SQLAlchemy, Flask-JWTManager, Flask-Bcrypt, CORS
-- Computer Vision: OpenCV, dlib library, imutils
-- Authentication: JWT (JSON Web Tokens), Bcrypt
-- Database: SQLite
-- Email: Flask-Mail
+- Dependencies:
+    - Flask, Flask-SocketIO, Flask-SQLAlchemy, Flask-JWTManager, Flask-Bcrypt, CORS
+    - Computer Vision: OpenCV, dlib library, imutils
+    - Authentication: JWT (JSON Web Tokens), Bcrypt
+    - Database: SQLite
+    - Email: Flask-Mail
   
-#### Working of the modules
+### Working of the modules
 The project consists of several key files:
-### Final.py: 
+#### Final.py: 
 Main application entry point, handles video processing and Morse     
 Code detection
-### auth_routes.py: 
+#### auth_routes.py: 
 Handles Authentication-related routes (login, register, verification)
-### db_setup.py: 
+#### db_setup.py: 
 Database models and configuration.
-### translation_module.py: 
+#### translation_module.py: 
 Morse code to text translation logic
 
 ### Component Interaction
@@ -143,7 +143,7 @@ Morse code to text translation logic
 3. JWT tokens are used for authentication API access
 4. Password hashing is done using Bcrypt
 
-#### API Endpoints
+### API Endpoints
 ##### Authentication
 - POST/auth/register - Register new user
 - POST/auth/login - Login with credentials
@@ -157,7 +157,7 @@ Morse code to text translation logic
 - POST/reset - Reset the current Morse code and translated text
 - GET/video-feed - Stream the processed webcam feed
 
-#### Configuration
+### Configuration
 ##### Email Configuration
 - MAIL_USERNAME : Gmail Address
 - MAIL_PASSWORD : An app password from Google
@@ -170,7 +170,7 @@ Morse code to text translation logic
 - SQLite database is used by default
 - Configuration can be modified in app.py
 
-#### Usage Guide
+### Usage Guide
 1. Register an account through the frontend
 2. Verify your email by clicking the link sent to your inbox
 3. Login to get access to the Morse code Decoder
