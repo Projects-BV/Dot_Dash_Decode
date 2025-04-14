@@ -184,7 +184,17 @@ const morseCodeData = [
     color: 'bg-orange-200',
     textColor: 'text-orange-800',
     description: 'Zulu: Two long signals followed by two short'
-  }
+  },
+  { letter: '0', morse: '-----', color: 'bg-gray-200', textColor: 'text-gray-800', description: 'Zero: Five long signals' },
+  { letter: '1', morse: '.----', color: 'bg-red-200', textColor: 'text-red-800', description: 'One: One short, four long signals' },
+  { letter: '2', morse: '..---', color: 'bg-yellow-200', textColor: 'text-yellow-800', description: 'Two: Two short, three long signals' },
+  { letter: '3', morse: '...--', color: 'bg-green-200', textColor: 'text-green-800', description: 'Three: Three short, two long signals' },
+  { letter: '4', morse: '....-', color: 'bg-blue-200', textColor: 'text-blue-800', description: 'Four: Four short, one long signal' },
+  { letter: '5', morse: '.....', color: 'bg-indigo-200', textColor: 'text-indigo-800', description: 'Five: Five short signals' },
+  { letter: '6', morse: '-....', color: 'bg-purple-200', textColor: 'text-purple-800', description: 'Six: One long, four short signals' },
+  { letter: '7', morse: '--...', color: 'bg-pink-200', textColor: 'text-pink-800', description: 'Seven: Two long, three short signals' },
+  { letter: '8', morse: '---..', color: 'bg-rose-200', textColor: 'text-rose-800', description: 'Eight: Three long, two short signals' },
+  { letter: '9', morse: '----.', color: 'bg-amber-200', textColor: 'text-amber-800', description: 'Nine: Four long, one short signal' }
 ];
 
 const MorseCodeEyeFlashcards = () => {
